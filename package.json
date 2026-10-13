@@ -33,6 +33,7 @@
     "vitest": "^5.0.4"
   },
   "dependencies": {
-    "booking-module": "github:isabellaluther/booking-module"
+    "booking-module": "github:isabellaluther/booking-module",
+    "js-cli-template": "github:ellalovisaj/1dv610-laboration-2"
   }
 }
