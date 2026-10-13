@@ -2,9 +2,15 @@
   "name": "study-room-booking",
   "version": "1.0.0",
   "description": "A web application for students to book study rooms.",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "repository": {
     "type": "git",
@@ -13,12 +19,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/isabellaluther/study-room-booking/issues"
   },
   "homepage": "https://github.com/isabellaluther/study-room-booking#readme",
   "devDependencies": {
-    "vite": "^8.3.4"
+    "@lnu/eslint-config": "^2.0.17",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
   }
 }
