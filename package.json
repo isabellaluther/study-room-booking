@@ -1,0 +1,24 @@
+{
+  "name": "study-room-booking",
+  "version": "1.0.0",
+  "description": "A web application for students to book study rooms.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isabellaluther/study-room-booking.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/isabellaluther/study-room-booking/issues"
+  },
+  "homepage": "https://github.com/isabellaluther/study-room-booking#readme",
+  "devDependencies": {
+    "vite": "^8.3.4"
+  }
+}
