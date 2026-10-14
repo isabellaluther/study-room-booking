@@ -16,7 +16,7 @@ Bookings are stored locally in the user's browser.
 
 ### Functional requirements
 
-- **FR1:** The application shall display three study rooms: Study Room 101, 102, and 103.
+- **FR1:** The application shall display three study rooms: Study Room 01, 02, and 03.
 - **FR2:** The user shall be able to select a study room and a date.
 - **FR3:** The user shall be able to choose a booking duration of 30 or 60 minutes.
 - **FR4:** The application shall display available time slots for the selected room, date, and duration.
