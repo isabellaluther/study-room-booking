@@ -12,6 +12,7 @@ import { studyRooms } from '../../studyRooms.js'
 import { isBookingDateAvailable } from '../../services/bookingDateService.js'
 import { BookingCalendar } from 'booking-module'
 import { getAvailableBookingTimes } from '../../services/bookingTimeService.js'
+import { createBooking } from '../../services/bookingService.js'
 
 /**
  * Defines the study-room-booking custom element.
@@ -142,6 +143,7 @@ customElements.define(
       )
 
       const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
+      const bookButton = this.shadowRoot.querySelector('#book-button')
 
       availableTimesContainer.addEventListener(
         'change',
@@ -159,6 +161,33 @@ customElements.define(
             availableTimes.find((timeSlot) => {
               return timeSlot.getStartTime().toISOString() === selectedStartTime
             }) ?? null
+
+          bookButton.disabled = !this.#selectedTimeSlot
+        },
+        { signal: this.#abortController.signal }
+      )
+
+      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
+
+      bookButton.addEventListener(
+        'click',
+        () => {
+          if (!this.#selectedStudyRoom || !this.#selectedTimeSlot) {
+            return
+          }
+
+          const bookingId = crypto.randomUUID()
+
+          try {
+            createBooking(this.#bookingCalendar, bookingId, this.#selectedStudyRoom, this.#selectedTimeSlot)
+
+            this.#renderAvailableTimes()
+
+            bookingMessage.textContent = 'Your booking was created successfully.'
+          } catch (error) {
+            bookingMessage.textContent = 'Could not create the booking. Please try again.'
+            console.error('Could not create booking:', error)
+          }
         },
         { signal: this.#abortController.signal }
       )
@@ -204,6 +233,8 @@ customElements.define(
      */
     #renderAvailableTimes() {
       this.#selectedTimeSlot = null
+      const bookButton = this.shadowRoot.querySelector('#book-button')
+      bookButton.disabled = true
 
       const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
 

@@ -44,6 +44,12 @@ export function createHtmlTemplate() {
     <section>
       <h2>Available Times</h2>
       <div id="available-times"></div>
+
+      <button type="button" id="book-button" disabled>
+        Book selected time
+      </button>
+
+      <p id="booking-message" role="status" aria-live="polite"></p>
     </section>
     </main>
   `
