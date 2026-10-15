@@ -60,6 +60,13 @@ customElements.define(
     #bookingCalendar = new BookingCalendar()
 
     /**
+     * The currently selected booking time slot.
+     *
+     * @type {import('booking-module').TimeSlot|null} The currently selected booking time slot.
+     */
+    #selectedTimeSlot = null
+
+    /**
      * Creates an instance of the study room booking component.
      */
     constructor() {
@@ -133,6 +140,28 @@ customElements.define(
         },
         { signal: this.#abortController.signal }
       )
+
+      const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
+
+      availableTimesContainer.addEventListener(
+        'change',
+        (event) => {
+          const selectedStartTime = event.target.value
+
+          const availableTimes = getAvailableBookingTimes(
+            this.#bookingCalendar,
+            this.#selectedStudyRoom,
+            this.#selectedBookingDate,
+            this.#selectedBookingDuration
+          )
+
+          this.#selectedTimeSlot =
+            availableTimes.find((timeSlot) => {
+              return timeSlot.getStartTime().toISOString() === selectedStartTime
+            }) ?? null
+        },
+        { signal: this.#abortController.signal }
+      )
     }
 
     /**
@@ -174,6 +203,8 @@ customElements.define(
      * @returns {void}
      */
     #renderAvailableTimes() {
+      this.#selectedTimeSlot = null
+
       const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
 
       availableTimesContainer.replaceChildren()
@@ -190,7 +221,8 @@ customElements.define(
       )
 
       for (const timeSlot of availableTimes) {
-        const timeElement = document.createElement('div')
+        const label = document.createElement('label')
+        const radioButton = document.createElement('input')
 
         const startTime = timeSlot.getStartTime()
         const endTime = timeSlot.getEndTime()
@@ -198,9 +230,14 @@ customElements.define(
         const start = startTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
         const end = endTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
 
-        timeElement.textContent = `${start}–${end}`
+        radioButton.type = 'radio'
+        radioButton.name = 'booking-time'
+        radioButton.value = startTime.toISOString()
 
-        availableTimesContainer.appendChild(timeElement)
+        label.appendChild(radioButton)
+        label.appendChild(document.createTextNode(`${start}-${end}`))
+
+        availableTimesContainer.appendChild(label)
       }
     }
   }
