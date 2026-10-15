@@ -40,6 +40,11 @@ export function createHtmlTemplate() {
         </label>
       </fieldset>
     </section>
+
+    <section>
+      <h2>Available Times</h2>
+      <div id="available-times"></div>
+    </section>
     </main>
   `
 
