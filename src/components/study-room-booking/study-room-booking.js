@@ -15,6 +15,11 @@ import { studyRooms } from '../../studyRooms.js'
  */
 customElements.define(
   'study-room-booking',
+  /**
+   * The study-room-booking custom element class.
+   * 
+   * @augments HTMLElement 
+   */
   class extends HTMLElement {
     /**
      * The currently selected study room.
