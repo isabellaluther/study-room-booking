@@ -25,8 +25,8 @@ export function createOpeningHoursTimeSlot(bookingDate) {
 /**
  * Returns available time slots for a study room on a selected date.
  *
- * @param {BookingCalendar} calendar - The booking calendar.
- * @param {Resource} studyRoom - The selected study room.
+ * @param {import('booking-module').BookingCalendar} calendar - The booking calendar.
+ * @param {import('booking-module').Resource} studyRoom - The selected study room.
  * @param {string} bookingDate - The selected date.
  * @param {number} durationInMinutes - The booking duration.
  * @returns {TimeSlot[]} The available time slots.

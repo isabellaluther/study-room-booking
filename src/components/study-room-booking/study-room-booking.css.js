@@ -27,17 +27,6 @@ export function createCssTemplate() {
       p {
         color: #555;
       }
-
-      section {
-        margin-top: 32px;
-      }
-
-      #study-rooms {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-        margin-top: 16px;
-      }
     </style>
   `
 
