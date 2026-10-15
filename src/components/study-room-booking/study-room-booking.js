@@ -10,6 +10,8 @@ import { createHtmlTemplate } from './study-room-booking.html.js'
 import { createCssTemplate } from './study-room-booking.css.js'
 import { studyRooms } from '../../studyRooms.js'
 import { isBookingDateAvailable } from '../../services/bookingDateService.js'
+import { BookingCalendar } from 'booking-module'
+import { getAvailableBookingTimes } from '../../services/bookingTimeService.js'
 
 /**
  * Defines the study-room-booking custom element.
@@ -51,6 +53,13 @@ customElements.define(
     #abortController = null
 
     /**
+     * The calendar containing the study room bookings.
+     *
+     * @type {BookingCalendar}
+     */
+    #bookingCalendar = new BookingCalendar()
+
+    /**
      * Creates an instance of the study room booking component.
      */
     constructor() {
@@ -83,6 +92,8 @@ customElements.define(
           this.#selectedStudyRoom = studyRooms.find((studyRoom) => {
             return studyRoom.getId() === selectedRoomId
           })
+
+          this.#renderAvailableTimes()
         },
         { signal: this.#abortController.signal }
       )
@@ -93,6 +104,8 @@ customElements.define(
         'change',
         (event) => {
           this.#selectedBookingDuration = Number(event.target.value)
+
+          this.#renderAvailableTimes()
         },
         { signal: this.#abortController.signal }
       )
@@ -104,6 +117,8 @@ customElements.define(
         'change',
         (event) => {
           this.#selectedBookingDate = event.target.value || null
+
+          this.#renderAvailableTimes()
 
           if (!this.#selectedBookingDate) {
             bookingDateMessage.textContent = ''
@@ -150,6 +165,42 @@ customElements.define(
         label.appendChild(document.createTextNode(studyRoom.getName()))
 
         studyRoomsContainer.appendChild(label)
+      }
+    }
+
+    /**
+     * Renders the available booking times for the selected study room, date, and duration.
+     *
+     * @returns {void}
+     */
+    #renderAvailableTimes() {
+      const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
+
+      availableTimesContainer.replaceChildren()
+
+      if (!this.#selectedStudyRoom || !this.#selectedBookingDate || !this.#selectedBookingDuration) {
+        return
+      }
+
+      const availableTimes = getAvailableBookingTimes(
+        this.#bookingCalendar,
+        this.#selectedStudyRoom,
+        this.#selectedBookingDate,
+        this.#selectedBookingDuration
+      )
+
+      for (const timeSlot of availableTimes) {
+        const timeElement = document.createElement('div')
+
+        const startTime = timeSlot.getStartTime()
+        const endTime = timeSlot.getEndTime()
+
+        const start = startTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+        const end = endTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
+
+        timeElement.textContent = `${start}–${end}`
+
+        availableTimesContainer.appendChild(timeElement)
       }
     }
   }
