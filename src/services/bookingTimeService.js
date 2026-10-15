@@ -7,6 +7,7 @@
  */
 
 import { TimeSlot } from 'booking-module'
+import { isBookingDateAvailable } from './bookingDateService.js'
 
 /**
  * Creates a time slot for the study room opening hours.
@@ -19,4 +20,23 @@ export function createOpeningHoursTimeSlot(bookingDate) {
   const closingTime = new Date(`${bookingDate}T20:00:00`)
 
   return new TimeSlot(openingTime, closingTime)
+}
+
+/**
+ * Returns available time slots for a study room on a selected date.
+ *
+ * @param {BookingCalendar} calendar - The booking calendar.
+ * @param {Resource} studyRoom - The selected study room.
+ * @param {string} bookingDate - The selected date.
+ * @param {number} durationInMinutes - The booking duration.
+ * @returns {TimeSlot[]} The available time slots.
+ */
+export function getAvailableBookingTimes(calendar, studyRoom, bookingDate, durationInMinutes) {
+  if (!isBookingDateAvailable(bookingDate)) {
+    return []
+  }
+
+  const openingHours = createOpeningHoursTimeSlot(bookingDate)
+
+  return calendar.getAvailableTimeSlots(studyRoom, openingHours, durationInMinutes)
 }
