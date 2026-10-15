@@ -37,6 +37,13 @@ customElements.define(
     #selectedBookingDate = null
 
     /**
+     * The currently selected booking duration.
+     *
+     * @type {number|null} The currently selected booking duration in minutes.
+     */
+    #selectedBookingDuration = null
+
+    /**
      * The abort controller used to manage event listeners.
      *
      * @type {AbortController|null} The abort controller.
@@ -76,6 +83,16 @@ customElements.define(
           this.#selectedStudyRoom = studyRooms.find((studyRoom) => {
             return studyRoom.getId() === selectedRoomId
           })
+        },
+        { signal: this.#abortController.signal }
+      )
+
+      const bookingDurationFieldset = this.shadowRoot.querySelector('#booking-duration')
+
+      bookingDurationFieldset.addEventListener(
+        'change',
+        (event) => {
+          this.#selectedBookingDuration = Number(event.target.value)
         },
         { signal: this.#abortController.signal }
       )

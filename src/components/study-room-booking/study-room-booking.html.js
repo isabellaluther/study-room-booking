@@ -19,10 +19,27 @@ export function createHtmlTemplate() {
       <section>
         <h2>Select Date</h2>
 
+        <label for="booking-date">Date</label>
         <input type="date" id="booking-date" name="booking-date">
 
         <p id="booking-date-message" role="status" aria-live="polite"></p>
       </section>
+
+      <section>
+      <fieldset id="booking-duration">
+        <legend>How long do you want to book the room for?</legend>
+
+        <label>
+          <input type="radio" name="booking-duration" value="30">
+          30 minutes
+        </label>
+
+        <label>
+          <input type="radio" name="booking-duration" value="60">
+          60 minutes
+        </label>
+      </fieldset>
+    </section>
     </main>
   `
 
