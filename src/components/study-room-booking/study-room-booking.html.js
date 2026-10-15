@@ -15,6 +15,12 @@ export function createHtmlTemplate() {
         <h2>Available Study Rooms</h2>
         <div id="study-rooms"></div>
       </section>
+
+      <section>
+        <h2>Select Date</h2>
+
+        <input type="date" id="booking-date" name="booking-date">
+      </section>
     </main>
   `
 
