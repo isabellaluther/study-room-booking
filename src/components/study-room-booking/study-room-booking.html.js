@@ -20,6 +20,8 @@ export function createHtmlTemplate() {
         <h2>Select Date</h2>
 
         <input type="date" id="booking-date" name="booking-date">
+
+        <p id="booking-date-message" role="status" aria-live="polite"></p>
       </section>
     </main>
   `

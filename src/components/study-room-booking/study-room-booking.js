@@ -9,6 +9,7 @@
 import { createHtmlTemplate } from './study-room-booking.html.js'
 import { createCssTemplate } from './study-room-booking.css.js'
 import { studyRooms } from '../../studyRooms.js'
+import { isBookingDateAvailable } from '../../services/bookingDateService.js'
 
 /**
  * Defines the study-room-booking custom element.
@@ -17,8 +18,8 @@ customElements.define(
   'study-room-booking',
   /**
    * The study-room-booking custom element class.
-   * 
-   * @augments HTMLElement 
+   *
+   * @augments HTMLElement
    */
   class extends HTMLElement {
     /**
@@ -80,11 +81,23 @@ customElements.define(
       )
 
       const bookingDateInput = this.shadowRoot.querySelector('#booking-date')
+      const bookingDateMessage = this.shadowRoot.querySelector('#booking-date-message')
 
       bookingDateInput.addEventListener(
         'change',
         (event) => {
           this.#selectedBookingDate = event.target.value || null
+
+          if (!this.#selectedBookingDate) {
+            bookingDateMessage.textContent = ''
+            return
+          }
+
+          if (isBookingDateAvailable(this.#selectedBookingDate)) {
+            bookingDateMessage.textContent = 'The selected date is available for booking.'
+          } else {
+            bookingDateMessage.textContent = 'Bookings are not available on weekends or Swedish public holidays.'
+          }
         },
         { signal: this.#abortController.signal }
       )
