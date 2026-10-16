@@ -43,7 +43,7 @@ customElements.define(
      *
      * @type {boolean}
      */
-    #canSaveBookings = true
+    #canSaveBookings = true 
 
     /**
      * Creates an instance of the study room booking component.
@@ -134,9 +134,14 @@ customElements.define(
 
       bookingList.addEventListener(
         'booking-cancelled',
-        () => {
-          bookingForm.refreshAvailableTimes()
-          this.#saveCurrentBookings()
+        (event) => {
+          const saved = this.#saveCurrentBookings()
+
+          event.detail.saved = saved
+
+          if (saved) {
+            bookingForm.refreshAvailableTimes()
+          }
         },
         { signal: this.#abortController.signal }
       )

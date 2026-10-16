@@ -73,16 +73,28 @@ customElements.define(
           const bookingId = cancelButton.dataset.bookingId
 
           try {
+            const booking = this.#bookingCalendar.getBookingById(bookingId)
+
             cancelBooking(this.#bookingCalendar, bookingId)
 
-            this.#renderBookings()
+            const cancellationEvent = new CustomEvent('booking-cancelled', {
+              bubbles: true,
+              composed: true,
+              detail: {
+                saved: false,
+              },
+            })
 
-            this.dispatchEvent(
-              new CustomEvent('booking-cancelled', {
-                bubbles: true,
-                composed: true,
-              })
-            )
+            this.dispatchEvent(cancellationEvent)
+
+            if (!cancellationEvent.detail.saved) {
+              this.#bookingCalendar.addBooking(booking)
+              this.#renderBookings()
+              window.alert('Your booking could not be cancelled. Please try again.')
+              return
+            }
+
+            this.#renderBookings()
           } catch (error) {
             console.error('Could not cancel booking:', error)
           }
