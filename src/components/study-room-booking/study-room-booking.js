@@ -10,6 +10,7 @@ import { BookingCalendar } from 'booking-module'
 import { createHtmlTemplate } from './study-room-booking.html.js'
 import { createCssTemplate } from './study-room-booking.css.js'
 import '../booking-form/index.js'
+import '../booking-list/index.js'
 
 /**
  * Defines the study-room-booking custom element.
@@ -51,8 +52,10 @@ customElements.define(
      */
     connectedCallback() {
       const bookingForm = this.shadowRoot.querySelector('booking-form')
+      const bookingList = this.shadowRoot.querySelector('booking-list')
 
       bookingForm.setBookingCalendar(this.#bookingCalendar)
+      bookingList.setBookingCalendar(this.#bookingCalendar)
     }
   }
 )

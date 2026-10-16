@@ -12,6 +12,7 @@ export function createHtmlTemplate() {
       <p>Find and book a study room</p>
 
       <booking-form></booking-form>
+      <booking-list></booking-list>
     </main>
   `
 
