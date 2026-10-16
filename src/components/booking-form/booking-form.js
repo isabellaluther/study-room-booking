@@ -223,6 +223,15 @@ customElements.define(
     }
 
     /**
+     * Refreshes the displayed available booking times.
+     *
+     * @returns {void}
+     */
+    refreshAvailableTimes() {
+      this.#renderAvailableTimes()
+    }
+
+    /**
      * Renders the available study rooms as radio buttons.
      *
      * @returns {void}

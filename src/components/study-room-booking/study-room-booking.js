@@ -73,6 +73,14 @@ customElements.define(
         },
         { signal: this.#abortController.signal }
       )
+
+      bookingList.addEventListener(
+        'booking-cancelled',
+        () => {
+          bookingForm.refreshAvailableTimes()
+        },
+        { signal: this.#abortController.signal }
+      )
     }
   }
 )
