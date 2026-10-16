@@ -13,9 +13,13 @@ export function createHtmlTemplate() {
     </section>
 
     <section>
-      <h2>Select Date</h2>
-      <label for="booking-date">Date</label>
-      <input type="date" id="booking-date" name="booking-date">
+      <h2 id="booking-date-heading">Select Date</h2>
+      <input
+        type="date"
+        id="booking-date"
+        name="booking-date"
+        aria-labelledby="booking-date-heading"
+      >
       <p id="booking-date-message" role="status" aria-live="polite"></p>
     </section>
 

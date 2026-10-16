@@ -63,6 +63,29 @@ export function createCssTemplate() {
         accent-color: #526ddd;
       }
 
+      #booking-date {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 12px;
+        padding: 14px 16px;
+        border: 2px solid #dfe5f0;
+        border-radius: 10px;
+        background-color: #f8faff;
+        color: #182b50;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      #booking-date:hover {
+        border-color: #a5b4e8;
+      }
+
+      #booking-date:focus-visible {
+        outline: 3px solid #526ddd;
+        outline-offset: 2px;
+      }
+
       @media (max-width: 600px) {
         #study-rooms {
           grid-template-columns: 1fr;
