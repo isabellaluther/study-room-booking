@@ -43,7 +43,7 @@ customElements.define(
      *
      * @type {boolean}
      */
-    #canSaveBookings = true 
+    #canSaveBookings = true
 
     /**
      * Creates an instance of the study room booking component.
