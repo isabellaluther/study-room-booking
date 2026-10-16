@@ -11,6 +11,7 @@ import { createHtmlTemplate } from './study-room-booking.html.js'
 import { createCssTemplate } from './study-room-booking.css.js'
 import '../booking-form/index.js'
 import '../booking-list/index.js'
+import { loadBookings, saveBookings } from '../../storage/bookingStorage.js'
 
 /**
  * Defines the study-room-booking custom element.
@@ -38,6 +39,13 @@ customElements.define(
     #abortController = null
 
     /**
+     * Indicates whether saved bookings were loaded successfully.
+     *
+     * @type {boolean}
+     */
+    #canSaveBookings = true
+
+    /**
      * Creates an instance of the study room booking component.
      */
     constructor() {
@@ -50,6 +58,49 @@ customElements.define(
 
       this.shadowRoot.appendChild(cssTemplate.content.cloneNode(true))
       this.shadowRoot.appendChild(htmlTemplate.content.cloneNode(true))
+
+      this.#loadSavedBookings()
+    }
+
+    /**
+     * Restores saved bookings to the shared calendar.
+     *
+     * @returns {void}
+     */
+    #loadSavedBookings() {
+      try {
+        const savedBookings = loadBookings()
+        const restoredCalendar = new BookingCalendar()
+
+        for (const booking of savedBookings) {
+          restoredCalendar.addBooking(booking)
+        }
+
+        this.#bookingCalendar = restoredCalendar
+      } catch (error) {
+        this.#canSaveBookings = false
+        console.error('Could not load saved bookings:', error)
+      }
+    }
+
+    /**
+     * Saves the current bookings if storage is available.
+     *
+     * @returns {void}
+     */
+    #saveCurrentBookings() {
+      if (!this.#canSaveBookings) {
+        window.alert('Saved bookings could not be loaded. Your changes cannot be saved.')
+        return
+      }
+
+      try {
+        const bookings = this.#bookingCalendar.getBookings()
+        saveBookings(bookings)
+      } catch (error) {
+        console.error('Could not save bookings:', error)
+        window.alert('Your booking could not be saved. It may be lost when you reload the page.')
+      }
     }
 
     /**
@@ -70,6 +121,7 @@ customElements.define(
         'booking-created',
         () => {
           bookingList.refreshBookings()
+          this.#saveCurrentBookings()
         },
         { signal: this.#abortController.signal }
       )
@@ -78,6 +130,7 @@ customElements.define(
         'booking-cancelled',
         () => {
           bookingForm.refreshAvailableTimes()
+          this.#saveCurrentBookings()
         },
         { signal: this.#abortController.signal }
       )
