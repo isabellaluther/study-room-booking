@@ -9,6 +9,7 @@
 import { createHtmlTemplate } from './booking-list.html.js'
 import { createCssTemplate } from './booking-list.css.js'
 import { studyRooms } from '../../studyRooms.js'
+import { cancelBooking } from '../../services/bookingService.js'
 
 /**
  * Defines the booking-list custom element.
@@ -29,6 +30,13 @@ customElements.define(
     #bookingCalendar = null
 
     /**
+     * The abort controller used to manage event listeners.
+     *
+     * @type {AbortController|null}
+     */
+    #abortController = null
+
+    /**
      * Creates an instance of the booking list component.
      */
     constructor() {
@@ -41,6 +49,56 @@ customElements.define(
 
       this.shadowRoot.appendChild(cssTemplate.content.cloneNode(true))
       this.shadowRoot.appendChild(htmlTemplate.content.cloneNode(true))
+    }
+
+    /**
+     * Handles cancellation requests from the booking list.
+     *
+     * @returns {void}
+     */
+    connectedCallback() {
+      this.#abortController = new AbortController()
+
+      const bookingsContainer = this.shadowRoot.querySelector('#bookings')
+
+      bookingsContainer.addEventListener(
+        'click',
+        (event) => {
+          const cancelButton = event.target.closest('button[data-booking-id]')
+
+          if (!cancelButton || !this.#bookingCalendar) {
+            return
+          }
+
+          const bookingId = cancelButton.dataset.bookingId
+
+          try {
+            cancelBooking(this.#bookingCalendar, bookingId)
+
+            this.#renderBookings()
+
+            this.dispatchEvent(
+              new CustomEvent('booking-cancelled', {
+                bubbles: true,
+                composed: true,
+              })
+            )
+          } catch (error) {
+            console.error('Could not cancel booking:', error)
+          }
+        },
+        { signal: this.#abortController.signal }
+      )
+    }
+
+    /**
+     * Cleans up event listeners and aborts any ongoing operations when the component is disconnected.
+     *
+     * @returns {void}
+     */
+    disconnectedCallback() {
+      this.#abortController?.abort()
+      this.#abortController = null
     }
 
     /**
@@ -94,7 +152,14 @@ customElements.define(
 
           bookingElement.textContent = `${studyRoom.getName()} - ${date}, ${start}-${end}`
 
+          const cancelButton = document.createElement('button')
+
+          cancelButton.type = 'button'
+          cancelButton.textContent = 'Cancel booking'
+          cancelButton.dataset.bookingId = booking.getId()
+
           bookingsContainer.appendChild(bookingElement)
+          bookingsContainer.appendChild(cancelButton)
         }
       }
     }

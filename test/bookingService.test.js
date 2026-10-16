@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { BookingCalendar, Resource, TimeSlot } from 'booking-module'
-import { createBooking } from '../src/services/bookingService.js'
+import { createBooking, cancelBooking } from '../src/services/bookingService.js'
 
 describe('createBooking', () => {
   it('creates a valid booking and adds it to the calendar', () => {
@@ -140,5 +140,30 @@ describe('createBooking', () => {
     const booking = createBooking(calendar, 'booking-01', studyRoom, timeSlot)
 
     expect(calendar.getBookingsForResource(studyRoom)).toContain(booking)
+  })
+})
+
+describe('cancelBooking', () => {
+  it('cancels an existing booking', () => {
+    const calendar = new BookingCalendar()
+    const studyRoom = new Resource('room-01', 'Study Room 01')
+
+    const timeSlot = new TimeSlot(new Date('2026-10-19T10:00:00'), new Date('2026-10-19T11:00:00'))
+
+    createBooking(calendar, 'booking-01', studyRoom, timeSlot)
+
+    expect(calendar.getBookingsForResource(studyRoom)).toHaveLength(1)
+
+    cancelBooking(calendar, 'booking-01')
+
+    expect(calendar.getBookingsForResource(studyRoom)).toHaveLength(0)
+  })
+
+  it('rejects cancellation of a non-existing booking', () => {
+    const calendar = new BookingCalendar()
+
+    expect(() => {
+      cancelBooking(calendar, 'booking-99')
+    }).toThrow('booking id does not exist')
   })
 })

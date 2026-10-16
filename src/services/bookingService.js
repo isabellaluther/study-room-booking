@@ -54,3 +54,14 @@ export function createBooking(calendar, bookingId, studyRoom, timeSlot) {
 
   return booking
 }
+
+/**
+ * Cancels an existing booking.
+ *
+ * @param {import('booking-module').BookingCalendar} calendar - The booking calendar.
+ * @param {string} bookingId - The id of the booking to cancel.
+ * @returns {void}
+ */
+export function cancelBooking(calendar, bookingId) {
+  calendar.cancelBooking(bookingId)
+}
