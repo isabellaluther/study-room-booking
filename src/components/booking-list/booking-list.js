@@ -56,6 +56,15 @@ customElements.define(
     }
 
     /**
+     * Refreshes the displayed bookings.
+     *
+     * @returns {void}
+     */
+    refreshBookings() {
+      this.#renderBookings()
+    }
+
+    /**
      * Renders the existing study room bookings.
      *
      * @returns {void}

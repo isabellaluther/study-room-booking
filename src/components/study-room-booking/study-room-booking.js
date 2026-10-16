@@ -31,6 +31,13 @@ customElements.define(
     #bookingCalendar = new BookingCalendar()
 
     /**
+     * Controls the component's event listeners.
+     *
+     * @type {AbortController|null}
+     */
+    #abortController = null
+
+    /**
      * Creates an instance of the study room booking component.
      */
     constructor() {
@@ -51,11 +58,21 @@ customElements.define(
      * @returns {void}
      */
     connectedCallback() {
+      this.#abortController = new AbortController()
+
       const bookingForm = this.shadowRoot.querySelector('booking-form')
       const bookingList = this.shadowRoot.querySelector('booking-list')
 
       bookingForm.setBookingCalendar(this.#bookingCalendar)
       bookingList.setBookingCalendar(this.#bookingCalendar)
+
+      bookingForm.addEventListener(
+        'booking-created',
+        () => {
+          bookingList.refreshBookings()
+        },
+        { signal: this.#abortController.signal }
+      )
     }
   }
 )

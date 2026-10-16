@@ -185,6 +185,13 @@ customElements.define(
 
             this.#renderAvailableTimes()
 
+            this.dispatchEvent(
+              new CustomEvent('booking-created', {
+                bubbles: true,
+                composed: true,
+              })
+            )
+
             bookingMessage.textContent = 'Your booking was created successfully.'
           } catch (error) {
             bookingMessage.textContent = 'Could not create the booking. Please try again.'
