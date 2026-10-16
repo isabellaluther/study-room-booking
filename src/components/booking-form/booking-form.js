@@ -185,12 +185,22 @@ customElements.define(
 
             this.#renderAvailableTimes()
 
-            this.dispatchEvent(
-              new CustomEvent('booking-created', {
-                bubbles: true,
-                composed: true,
-              })
-            )
+            const bookingEvent = new CustomEvent('booking-created', {
+              bubbles: true,
+              composed: true,
+              detail: {
+                saved: false,
+              },
+            })
+
+            this.dispatchEvent(bookingEvent)
+
+            if (!bookingEvent.detail.saved) {
+              this.#bookingCalendar.cancelBooking(bookingId)
+              this.#renderAvailableTimes()
+              bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
+              return
+            }
 
             bookingMessage.textContent = 'Your booking was created successfully.'
           } catch (error) {

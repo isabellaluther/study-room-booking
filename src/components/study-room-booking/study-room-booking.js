@@ -86,20 +86,21 @@ customElements.define(
     /**
      * Saves the current bookings if storage is available.
      *
-     * @returns {void}
+     * @returns {boolean} True if the bookings were saved, otherwise false.
      */
     #saveCurrentBookings() {
       if (!this.#canSaveBookings) {
-        window.alert('Saved bookings could not be loaded. Your changes cannot be saved.')
-        return
+        return false
       }
 
       try {
         const bookings = this.#bookingCalendar.getBookings()
         saveBookings(bookings)
+
+        return true
       } catch (error) {
         console.error('Could not save bookings:', error)
-        window.alert('Your booking could not be saved. It may be lost when you reload the page.')
+        return false
       }
     }
 
@@ -119,9 +120,14 @@ customElements.define(
 
       bookingForm.addEventListener(
         'booking-created',
-        () => {
-          bookingList.refreshBookings()
-          this.#saveCurrentBookings()
+        (event) => {
+          const saved = this.#saveCurrentBookings()
+
+          event.detail.saved = saved
+
+          if (saved) {
+            bookingList.refreshBookings()
+          }
         },
         { signal: this.#abortController.signal }
       )
