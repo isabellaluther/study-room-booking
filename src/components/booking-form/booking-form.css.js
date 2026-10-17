@@ -86,6 +86,55 @@ export function createCssTemplate() {
         outline-offset: 2px;
       }
 
+      #booking-duration {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        min-width: 0;
+      }
+
+      #booking-duration legend {
+        margin-bottom: 12px;
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      #booking-duration label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px;
+        background-color: #f8faff;
+        border: 2px solid #dfe5f0;
+        border-radius: 12px;
+        color: #182b50;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      #booking-duration label:hover {
+        background-color: #eff2ff;
+        border-color: #a5b4e8;
+      }
+
+      #booking-duration label:has(input:checked) {
+        background-color: #eff2ff;
+        border-color: #526ddd;
+      }
+
+      #booking-duration label:has(input:focus-visible) {
+        outline: 3px solid #526ddd;
+        outline-offset: 3px;
+      }
+
+      #booking-duration input[type='radio'] {
+        accent-color: #526ddd;
+      }
+
       @media (max-width: 600px) {
         #study-rooms {
           grid-template-columns: 1fr;
