@@ -135,6 +135,75 @@ export function createCssTemplate() {
         accent-color: #526ddd;
       }
 
+      #available-times {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      #available-times label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 8px;
+        background-color: #f8faff;
+        border: 2px solid #dfe5f0;
+        border-radius: 10px;
+        color: #182b50;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      #available-times label:hover {
+        background-color: #eff2ff;
+        border-color: #a5b4e8;
+      }
+
+      #available-times label:has(input:checked) {
+        background-color: #eff2ff;
+        border-color: #526ddd;
+      }
+
+      #available-times label:has(input:focus-visible) {
+        outline: 3px solid #526ddd;
+        outline-offset: 3px;
+      }
+
+      #available-times input[type='radio'] {
+        accent-color: #526ddd;
+      }
+
+      #book-button {
+        display: block;
+        width: 100%;
+        margin-top: 24px;
+        padding: 16px 24px;
+        background-color: #526ddd;
+        border: none;
+        border-radius: 10px;
+        color: #ffffff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      #book-button:hover:not(:disabled) {
+        background-color: #4059c5;
+      }
+
+      #book-button:focus-visible {
+        outline: 3px solid #182b50;
+        outline-offset: 3px;
+      }
+
+      #book-button:disabled {
+        background-color: #cbd5e1;
+        color: #64748b;
+        cursor: not-allowed;
+      }
+
       @media (max-width: 600px) {
         #study-rooms {
           grid-template-columns: 1fr;
@@ -144,6 +213,10 @@ export function createCssTemplate() {
           flex-direction: row;
           justify-content: flex-start;
           padding: 16px;
+        }
+
+        #available-times {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
     </style>
