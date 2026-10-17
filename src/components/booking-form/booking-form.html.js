@@ -40,7 +40,7 @@ export function createHtmlTemplate() {
       </fieldset>
     </section>
 
-    <section>
+    <section id="available-times-section" hidden> 
       <h2>Available Times</h2>
       <div id="available-times"></div>
 

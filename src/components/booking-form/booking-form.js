@@ -276,6 +276,7 @@ customElements.define(
 
       const availableTimesContainer = this.shadowRoot.querySelector('#available-times')
       const bookButton = this.shadowRoot.querySelector('#book-button')
+      const availableTimesSection = this.shadowRoot.querySelector('#available-times-section')
 
       availableTimesContainer.replaceChildren()
       bookButton.disabled = true
@@ -286,8 +287,11 @@ customElements.define(
         !this.#selectedBookingDate ||
         !this.#selectedBookingDuration
       ) {
+        availableTimesSection.hidden = true
         return
       }
+
+      availableTimesSection.hidden = false
 
       const availableTimes = getAvailableBookingTimes(
         this.#bookingCalendar,
