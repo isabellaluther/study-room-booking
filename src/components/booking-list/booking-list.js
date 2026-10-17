@@ -152,7 +152,12 @@ customElements.define(
         const bookings = this.#bookingCalendar.getBookingsForResource(studyRoom)
 
         for (const booking of bookings) {
-          const bookingElement = document.createElement('p')
+          const bookingCard = document.createElement('article')
+          bookingCard.className = 'booking-card'
+
+          const roomElement = document.createElement('h3')
+          const dateElement = document.createElement('p')
+          const timeElement = document.createElement('p')
 
           const timeSlot = booking.getTimeSlot()
           const startTime = timeSlot.getStartTime()
@@ -162,7 +167,9 @@ customElements.define(
           const start = startTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
           const end = endTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
 
-          bookingElement.textContent = `${studyRoom.getName()} - ${date}, ${start}-${end}`
+          roomElement.textContent = studyRoom.getName()
+          dateElement.textContent = date
+          timeElement.textContent = `${start}-${end}`
 
           const cancelButton = document.createElement('button')
 
@@ -170,8 +177,12 @@ customElements.define(
           cancelButton.textContent = 'Cancel booking'
           cancelButton.dataset.bookingId = booking.getId()
 
-          bookingsContainer.appendChild(bookingElement)
-          bookingsContainer.appendChild(cancelButton)
+          bookingCard.appendChild(roomElement)
+          bookingCard.appendChild(dateElement)
+          bookingCard.appendChild(timeElement)
+          bookingCard.appendChild(cancelButton)
+
+          bookingsContainer.appendChild(bookingCard)
         }
       }
     }
