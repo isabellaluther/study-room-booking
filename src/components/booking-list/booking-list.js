@@ -148,6 +148,15 @@ customElements.define(
         return
       }
 
+      if (this.#bookingCalendar.getBookings().length === 0) {
+        const emptyMessage = document.createElement('p')
+        emptyMessage.className = 'empty-message'
+        emptyMessage.textContent = 'You have no bookings yet.'
+
+        bookingsContainer.appendChild(emptyMessage)
+        return
+      }
+
       for (const studyRoom of studyRooms) {
         const bookings = this.#bookingCalendar.getBookingsForResource(studyRoom)
 

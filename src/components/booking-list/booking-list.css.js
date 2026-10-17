@@ -22,6 +22,17 @@ export function createCssTemplate() {
         margin-top: 16px;
       }
 
+      .empty-message {
+        margin: 0;
+        padding: 32px 20px;
+        background-color: #f8faff;
+        border: 1px solid #dfe5f0;
+        border-radius: 12px;
+        color: #64748b;
+        text-align: center;
+        font-size: 14px;
+      }
+
       .booking-card {
         padding: 20px;
         background-color: #f8faff;
