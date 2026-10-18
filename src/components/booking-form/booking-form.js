@@ -104,9 +104,7 @@ customElements.define(
             }) ?? null
 
           this.#renderAvailableTimes()
-
-          bookingMessage.textContent = ''
-          delete bookingMessage.dataset.status
+          this.#clearBookingMessage()
         },
         { signal: this.#abortController.signal }
       )
@@ -121,9 +119,7 @@ customElements.define(
           this.#selectedBookingDate = event.target.value || null
 
           this.#renderAvailableTimes()
-
-          bookingMessage.textContent = ''
-          delete bookingMessage.dataset.status
+          this.#clearBookingMessage()
 
           if (!this.#selectedBookingDate) {
             bookingDateMessage.textContent = ''
@@ -150,9 +146,7 @@ customElements.define(
           this.#selectedBookingDuration = Number(event.target.value)
 
           this.#renderAvailableTimes()
-
-          bookingMessage.textContent = ''
-          delete bookingMessage.dataset.status
+          this.#clearBookingMessage()
         },
         { signal: this.#abortController.signal }
       )
@@ -247,17 +241,25 @@ customElements.define(
     }
 
     /**
+     * Clears the previous booking message.
+     *
+     * @returns {void}
+     */
+    #clearBookingMessage() {
+      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
+
+      bookingMessage.textContent = ''
+      delete bookingMessage.dataset.status
+    }
+
+    /**
      * Refreshes the displayed available booking times and clears any booking messages.
      *
      * @returns {void}
      */
     refreshAvailableTimes() {
       this.#renderAvailableTimes()
-
-      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
-      bookingMessage.textContent = ''
-
-      delete bookingMessage.dataset.status
+      this.#clearBookingMessage()
     }
 
     /**
