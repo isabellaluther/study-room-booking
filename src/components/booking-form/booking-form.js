@@ -239,6 +239,9 @@ customElements.define(
      */
     refreshAvailableTimes() {
       this.#renderAvailableTimes()
+
+      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
+      bookingMessage.textContent = ''
     }
 
     /**
