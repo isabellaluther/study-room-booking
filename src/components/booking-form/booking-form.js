@@ -233,7 +233,7 @@ customElements.define(
     }
 
     /**
-     * Refreshes the displayed available booking times.
+     * Refreshes the displayed available booking times and clears any booking messages.
      *
      * @returns {void}
      */
