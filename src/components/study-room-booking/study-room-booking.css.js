@@ -59,6 +59,10 @@ export function createCssTemplate() {
           font-size: 28px;
         }
       }
+        
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
     </style>
   `
 
