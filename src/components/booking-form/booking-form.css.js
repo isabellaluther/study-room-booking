@@ -204,6 +204,34 @@ export function createCssTemplate() {
         cursor: not-allowed;
       }
 
+      #booking-date-message,
+      #booking-message {
+        margin: 12px 0 0;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      #booking-date-message:empty,
+      #booking-message:empty {
+        display: none;
+      }
+
+      #booking-date-message[data-status='success'],
+      #booking-message[data-status='success'] {
+        background-color: #ecfdf3;
+        border: 1px solid #a7e3bd;
+        color: #17663d;
+      }
+
+      #booking-date-message[data-status='error'],
+      #booking-message[data-status='error'] {
+        background-color: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #9f2439;
+      }
+
       @media (max-width: 600px) {
         #study-rooms {
           grid-template-columns: 1fr;

@@ -104,12 +104,16 @@ customElements.define(
             }) ?? null
 
           this.#renderAvailableTimes()
+
+          bookingMessage.textContent = ''
+          delete bookingMessage.dataset.status
         },
         { signal: this.#abortController.signal }
       )
 
       const bookingDateInput = this.shadowRoot.querySelector('#booking-date')
       const bookingDateMessage = this.shadowRoot.querySelector('#booking-date-message')
+      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
 
       bookingDateInput.addEventListener(
         'change',
@@ -118,15 +122,21 @@ customElements.define(
 
           this.#renderAvailableTimes()
 
+          bookingMessage.textContent = ''
+          delete bookingMessage.dataset.status
+
           if (!this.#selectedBookingDate) {
             bookingDateMessage.textContent = ''
+            delete bookingDateMessage.dataset.status
             return
           }
 
           if (isBookingDateAvailable(this.#selectedBookingDate)) {
             bookingDateMessage.textContent = 'The selected date is available for booking.'
+            bookingDateMessage.dataset.status = 'success'
           } else {
             bookingDateMessage.textContent = 'Bookings are not available on weekends or Swedish public holidays.'
+            bookingDateMessage.dataset.status = 'error'
           }
         },
         { signal: this.#abortController.signal }
@@ -140,6 +150,9 @@ customElements.define(
           this.#selectedBookingDuration = Number(event.target.value)
 
           this.#renderAvailableTimes()
+
+          bookingMessage.textContent = ''
+          delete bookingMessage.dataset.status
         },
         { signal: this.#abortController.signal }
       )
@@ -169,8 +182,6 @@ customElements.define(
         { signal: this.#abortController.signal }
       )
 
-      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
-
       bookButton.addEventListener(
         'click',
         () => {
@@ -199,12 +210,15 @@ customElements.define(
               this.#bookingCalendar.cancelBooking(bookingId)
               this.#renderAvailableTimes()
               bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
+              bookingMessage.dataset.status = 'error'
               return
             }
 
             bookingMessage.textContent = 'Your booking was created successfully.'
+            bookingMessage.dataset.status = 'success'
           } catch (error) {
             bookingMessage.textContent = 'Could not create the booking. Please try again.'
+            bookingMessage.dataset.status = 'error'
             console.error('Could not create booking:', error)
           }
         },
@@ -242,6 +256,8 @@ customElements.define(
 
       const bookingMessage = this.shadowRoot.querySelector('#booking-message')
       bookingMessage.textContent = ''
+
+      delete bookingMessage.dataset.status
     }
 
     /**
