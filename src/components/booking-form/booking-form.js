@@ -90,7 +90,45 @@ customElements.define(
       this.#abortController = new AbortController()
 
       this.#renderStudyRooms()
+      this.#registerEventListeners()
+    }
 
+    /**
+     * Removes event listeners when the component is disconnected.
+     *
+     * @returns {void}
+     */
+    disconnectedCallback() {
+      this.#abortController?.abort()
+      this.#abortController = null
+    }
+
+    /**
+     * Sets the shared booking calendar.
+     *
+     * @param {import('booking-module').BookingCalendar} bookingCalendar - The booking calendar.
+     * @returns {void}
+     */
+    setBookingCalendar(bookingCalendar) {
+      this.#bookingCalendar = bookingCalendar
+    }
+
+    /**
+     * Refreshes the displayed available booking times and clears any booking messages.
+     *
+     * @returns {void}
+     */
+    refreshAvailableTimes() {
+      this.#renderAvailableTimes()
+      this.#clearBookingMessage()
+    }
+
+    /**
+     * Registers event listeners for the booking form.
+     *
+     * @returns {void}
+     */
+    #registerEventListeners() {
       const studyRoomsContainer = this.shadowRoot.querySelector('#study-rooms')
 
       studyRoomsContainer.addEventListener(
@@ -110,30 +148,11 @@ customElements.define(
       )
 
       const bookingDateInput = this.shadowRoot.querySelector('#booking-date')
-      const bookingDateMessage = this.shadowRoot.querySelector('#booking-date-message')
-      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
 
       bookingDateInput.addEventListener(
         'change',
         (event) => {
-          this.#selectedBookingDate = event.target.value || null
-
-          this.#renderAvailableTimes()
-          this.#clearBookingMessage()
-
-          if (!this.#selectedBookingDate) {
-            bookingDateMessage.textContent = ''
-            delete bookingDateMessage.dataset.status
-            return
-          }
-
-          if (isBookingDateAvailable(this.#selectedBookingDate)) {
-            bookingDateMessage.textContent = 'The selected date is available for booking.'
-            bookingDateMessage.dataset.status = 'success'
-          } else {
-            bookingDateMessage.textContent = 'Bookings are not available on weekends or Swedish public holidays.'
-            bookingDateMessage.dataset.status = 'error'
-          }
+          this.#handleBookingDateChange(event.target.value)
         },
         { signal: this.#abortController.signal }
       )
@@ -179,87 +198,85 @@ customElements.define(
       bookButton.addEventListener(
         'click',
         () => {
-          if (!this.#selectedStudyRoom || !this.#selectedTimeSlot) {
-            return
-          }
-
-          const bookingId = crypto.randomUUID()
-
-          try {
-            createBooking(this.#bookingCalendar, bookingId, this.#selectedStudyRoom, this.#selectedTimeSlot)
-
-            this.#renderAvailableTimes()
-
-            const bookingEvent = new CustomEvent('booking-created', {
-              bubbles: true,
-              composed: true,
-              detail: {
-                saved: false,
-              },
-            })
-
-            this.dispatchEvent(bookingEvent)
-
-            if (!bookingEvent.detail.saved) {
-              this.#bookingCalendar.cancelBooking(bookingId)
-              this.#renderAvailableTimes()
-              bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
-              bookingMessage.dataset.status = 'error'
-              return
-            }
-
-            bookingMessage.textContent = 'Your booking was created successfully.'
-            bookingMessage.dataset.status = 'success'
-          } catch (error) {
-            bookingMessage.textContent = 'Could not create the booking. Please try again.'
-            bookingMessage.dataset.status = 'error'
-            console.error('Could not create booking:', error)
-          }
+          this.#handleBookingCreation()
         },
         { signal: this.#abortController.signal }
       )
     }
 
     /**
-     * Removes event listeners when the component is disconnected.
+     * Creates a booking and handles the result.
      *
      * @returns {void}
      */
-    disconnectedCallback() {
-      this.#abortController?.abort()
-      this.#abortController = null
-    }
+    #handleBookingCreation() {
+      if (!this.#selectedStudyRoom || !this.#selectedTimeSlot) {
+        return
+      }
 
-    /**
-     * Sets the shared booking calendar.
-     *
-     * @param {import('booking-module').BookingCalendar} bookingCalendar - The booking calendar.
-     * @returns {void}
-     */
-    setBookingCalendar(bookingCalendar) {
-      this.#bookingCalendar = bookingCalendar
-    }
-
-    /**
-     * Clears the previous booking message.
-     *
-     * @returns {void}
-     */
-    #clearBookingMessage() {
       const bookingMessage = this.shadowRoot.querySelector('#booking-message')
+      const bookingId = crypto.randomUUID()
 
-      bookingMessage.textContent = ''
-      delete bookingMessage.dataset.status
+      try {
+        createBooking(this.#bookingCalendar, bookingId, this.#selectedStudyRoom, this.#selectedTimeSlot)
+
+        this.#renderAvailableTimes()
+
+        const bookingEvent = new CustomEvent('booking-created', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            saved: false,
+          },
+        })
+
+        this.dispatchEvent(bookingEvent)
+
+        if (!bookingEvent.detail.saved) {
+          this.#bookingCalendar.cancelBooking(bookingId)
+          this.#renderAvailableTimes()
+
+          bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
+          bookingMessage.dataset.status = 'error'
+          return
+        }
+
+        bookingMessage.textContent = 'Your booking was created successfully.'
+        bookingMessage.dataset.status = 'success'
+      } catch (error) {
+        bookingMessage.textContent = 'Could not create the booking. Please try again.'
+        bookingMessage.dataset.status = 'error'
+        console.error('Could not create booking:', error)
+      }
     }
 
     /**
-     * Refreshes the displayed available booking times and clears any booking messages.
+     * Handles changes to the selected booking date.
      *
+     * @param {string} bookingDate - The selected booking date.
      * @returns {void}
      */
-    refreshAvailableTimes() {
+    #handleBookingDateChange(bookingDate) {
+      this.#selectedBookingDate = bookingDate || null
+
       this.#renderAvailableTimes()
       this.#clearBookingMessage()
+
+      const bookingDateMessage = this.shadowRoot.querySelector('#booking-date-message')
+
+      if (!this.#selectedBookingDate) {
+        bookingDateMessage.textContent = ''
+        delete bookingDateMessage.dataset.status
+        return
+      }
+
+      if (isBookingDateAvailable(this.#selectedBookingDate)) {
+        bookingDateMessage.textContent = 'The selected date is available for booking.'
+        bookingDateMessage.dataset.status = 'success'
+      } else {
+        bookingDateMessage.textContent = 'Bookings are not available on weekends or Swedish public holidays.'
+        bookingDateMessage.dataset.status = 'error'
+      }
     }
 
     /**
@@ -340,6 +357,18 @@ customElements.define(
 
         availableTimesContainer.appendChild(label)
       }
+    }
+
+    /**
+     * Clears the previous booking message.
+     *
+     * @returns {void}
+     */
+    #clearBookingMessage() {
+      const bookingMessage = this.shadowRoot.querySelector('#booking-message')
+
+      bookingMessage.textContent = ''
+      delete bookingMessage.dataset.status
     }
   }
 )
