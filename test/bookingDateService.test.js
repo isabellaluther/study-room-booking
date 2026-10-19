@@ -25,4 +25,16 @@ describe('isBookingDateAvailable', () => {
   it('prevents bookings on Swedish public holidays', () => {
     expect(isBookingDateAvailable('2026-12-25')).toBe(false)
   })
+
+  it('rejects dates that do not exist', () => {
+    expect(() => isBookingDateAvailable('2026-02-30')).toThrow(RangeError)
+  })
+
+  it('rejects dates with an invalid format', () => {
+    expect(() => isBookingDateAvailable('15-10-2026')).toThrow(RangeError)
+  })
+
+  it('rejects booking dates that are not strings', () => {
+    expect(() => isBookingDateAvailable(null)).toThrow(TypeError)
+  })
 })
