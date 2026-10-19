@@ -63,48 +63,6 @@ customElements.define(
     }
 
     /**
-     * Restores saved bookings to the shared calendar.
-     *
-     * @returns {void}
-     */
-    #loadSavedBookings() {
-      try {
-        const savedBookings = loadBookings()
-        const restoredCalendar = new BookingCalendar()
-
-        for (const booking of savedBookings) {
-          restoredCalendar.addBooking(booking)
-        }
-
-        this.#bookingCalendar = restoredCalendar
-      } catch (error) {
-        this.#canSaveBookings = false
-        console.error('Could not load saved bookings:', error)
-      }
-    }
-
-    /**
-     * Saves the current bookings if storage is available.
-     *
-     * @returns {boolean} True if the bookings were saved, otherwise false.
-     */
-    #saveCurrentBookings() {
-      if (!this.#canSaveBookings) {
-        return false
-      }
-
-      try {
-        const bookings = this.#bookingCalendar.getBookings()
-        saveBookings(bookings)
-
-        return true
-      } catch (error) {
-        console.error('Could not save bookings:', error)
-        return false
-      }
-    }
-
-    /**
      * Invoked when the component is connected to the document.
      *
      * @returns {void}
@@ -145,6 +103,58 @@ customElements.define(
         },
         { signal: this.#abortController.signal }
       )
+    }
+
+    /**
+     * Invoked when the component is disconnected from the document.
+     *
+     * @returns {void}
+     */
+    disconnectedCallback() {
+      this.#abortController?.abort()
+      this.#abortController = null
+    }
+
+    /**
+     * Restores saved bookings to the shared calendar.
+     *
+     * @returns {void}
+     */
+    #loadSavedBookings() {
+      try {
+        const savedBookings = loadBookings()
+        const restoredCalendar = new BookingCalendar()
+
+        for (const booking of savedBookings) {
+          restoredCalendar.addBooking(booking)
+        }
+
+        this.#bookingCalendar = restoredCalendar
+      } catch (error) {
+        this.#canSaveBookings = false
+        console.error('Could not load saved bookings:', error)
+      }
+    }
+
+    /**
+     * Saves the current bookings if storage is available.
+     *
+     * @returns {boolean} True if the bookings were saved, otherwise false.
+     */
+    #saveCurrentBookings() {
+      if (!this.#canSaveBookings) {
+        return false
+      }
+
+      try {
+        const bookings = this.#bookingCalendar.getBookings()
+        saveBookings(bookings)
+
+        return true
+      } catch (error) {
+        console.error('Could not save bookings:', error)
+        return false
+      }
     }
   }
 )
