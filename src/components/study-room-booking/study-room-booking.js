@@ -76,6 +76,27 @@ customElements.define(
       bookingForm.setBookingCalendar(this.#bookingCalendar)
       bookingList.setBookingCalendar(this.#bookingCalendar)
 
+      this.#registerEventListeners(bookingForm, bookingList)
+    }
+
+    /**
+     * Invoked when the component is disconnected from the document.
+     *
+     * @returns {void}
+     */
+    disconnectedCallback() {
+      this.#abortController?.abort()
+      this.#abortController = null
+    }
+
+    /**
+     * Registers listeners for booking creation and cancellation.
+     *
+     * @param {HTMLElement} bookingForm - The booking form component.
+     * @param {HTMLElement} bookingList - The booking list component.
+     * @returns {void}
+     */
+    #registerEventListeners(bookingForm, bookingList) {
       bookingForm.addEventListener(
         'booking-created',
         (event) => {
@@ -103,16 +124,6 @@ customElements.define(
         },
         { signal: this.#abortController.signal }
       )
-    }
-
-    /**
-     * Invoked when the component is disconnected from the document.
-     *
-     * @returns {void}
-     */
-    disconnectedCallback() {
-      this.#abortController?.abort()
-      this.#abortController = null
     }
 
     /**
