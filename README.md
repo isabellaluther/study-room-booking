@@ -27,3 +27,50 @@ Bookings are stored locally in the user's browser.
 - **FR9:** The application shall only allow bookings Monday to Friday, between 08:00 and 20:00.
 - **FR10:** The application shall prevent bookings on Swedish public holidays.
 - **FR11:** The application shall save bookings locally in the browser so they remain available after reloading the page.
+
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/isabellaluther/study-room-booking.git
+   ```
+
+2. Open the project directory:
+
+   ```bash
+   cd study-room-booking
+   ```
+
+3. Install the dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the application:
+
+   ```bash
+   npm run dev
+   ```
+
+Open the local URL displayed in the terminal.
+
+## Testing
+
+Run the automated tests:
+
+```bash
+npm test
+```
+
+Run the code quality checks:
+
+```bash
+npm run lint
+npm run format:check
+npm run build
+```
+
+Manual test cases and results are documented in [TEST_REPORT.md](TEST_REPORT.md).
