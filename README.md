@@ -2,6 +2,12 @@
 
 A web application for students to book study rooms.
 
+## Live Application
+
+The application is available at:
+
+https://isabellaluther.github.io/study-room-booking/
+
 ## Vision
 
 The application aims to make it easy for students to find and book available study rooms.
