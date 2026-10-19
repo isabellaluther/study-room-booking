@@ -58,10 +58,10 @@ export function createCssTemplate() {
         h1 {
           font-size: 28px;
         }
-      }
-        
-      .dashboard {
-        grid-template-columns: 1fr;
+
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   `
