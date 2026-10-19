@@ -114,31 +114,48 @@ customElements.define(
      * @returns {void}
      */
     #handleBookingCancellation(bookingId) {
+      let booking
+
       try {
-        const booking = this.#bookingCalendar.getBookingById(bookingId)
+        booking = this.#bookingCalendar.getBookingById(bookingId)
 
         cancelBooking(this.#bookingCalendar, bookingId)
-
-        const cancellationEvent = new CustomEvent('booking-cancelled', {
-          bubbles: true,
-          composed: true,
-          detail: {
-            saved: false,
-          },
-        })
-
-        this.dispatchEvent(cancellationEvent)
-
-        if (!cancellationEvent.detail.saved) {
-          this.#bookingCalendar.addBooking(booking)
-          this.#renderBookings()
-          window.alert('Your booking could not be cancelled. Please try again.')
-          return
-        }
-
-        this.#renderBookings()
       } catch (error) {
         console.error('Could not cancel booking:', error)
+        window.alert('Your booking could not be cancelled. Please try again.')
+        return
+      }
+
+      const cancellationEvent = new CustomEvent('booking-cancelled', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          saved: false,
+        },
+      })
+
+      this.dispatchEvent(cancellationEvent)
+
+      if (!cancellationEvent.detail.saved) {
+        try {
+          this.#bookingCalendar.addBooking(booking)
+        } catch (error) {
+          console.error('Could not restore cancelled booking:', error)
+          window.alert('The booking could not be restored. Please reload the page.')
+          return
+        }
+      }
+
+      try {
+        this.#renderBookings()
+      } catch (error) {
+        console.error('Could not refresh bookings:', error)
+        window.alert('The booking list could not be updated. Please reload the page.')
+        return
+      }
+
+      if (!cancellationEvent.detail.saved) {
+        window.alert('Your booking could not be cancelled. Please try again.')
       }
     }
 
