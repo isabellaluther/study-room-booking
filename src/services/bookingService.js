@@ -19,14 +19,14 @@ import { isBookingDateAvailable } from './bookingDateService.js'
  * @returns {Booking} The created booking.
  */
 export function createBooking(calendar, bookingId, studyRoom, timeSlot) {
-  const durationInMinutes = (timeSlot.getEndTime().getTime() - timeSlot.getStartTime().getTime()) / (60 * 1000)
+  const startTime = timeSlot.getStartTime()
+  const endTime = timeSlot.getEndTime()
+
+  const durationInMinutes = (endTime - startTime) / (60 * 1000)
 
   if (durationInMinutes !== 30 && durationInMinutes !== 60) {
     throw new RangeError('Booking duration must be 30 or 60 minutes.')
   }
-
-  const startTime = timeSlot.getStartTime()
-  const endTime = timeSlot.getEndTime()
 
   const openingTime = new Date(startTime)
   openingTime.setHours(8, 0, 0, 0)
@@ -42,7 +42,7 @@ export function createBooking(calendar, bookingId, studyRoom, timeSlot) {
     throw new RangeError('A booking must start and end on the same day.')
   }
 
-  const bookingDate = timeSlot.getStartTime().toLocaleDateString('sv-SE')
+  const bookingDate = startTime.toLocaleDateString('sv-SE')
 
   if (!isBookingDateAvailable(bookingDate)) {
     throw new Error('Bookings are not available on weekends or Swedish public holidays.')
