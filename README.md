@@ -28,7 +28,6 @@ Bookings are stored locally in the user's browser.
 - **FR10:** The application shall prevent bookings on Swedish public holidays.
 - **FR11:** The application shall save bookings locally in the browser so they remain available after reloading the page.
 
-
 ## Installation
 
 1. Clone the repository:
