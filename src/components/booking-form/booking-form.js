@@ -219,35 +219,48 @@ customElements.define(
 
       try {
         createBooking(this.#bookingCalendar, bookingId, this.#selectedStudyRoom, this.#selectedTimeSlot)
-
-        this.#renderAvailableTimes()
-
-        const bookingEvent = new CustomEvent('booking-created', {
-          bubbles: true,
-          composed: true,
-          detail: {
-            saved: false,
-          },
-        })
-
-        this.dispatchEvent(bookingEvent)
-
-        if (!bookingEvent.detail.saved) {
-          this.#bookingCalendar.cancelBooking(bookingId)
-          this.#renderAvailableTimes()
-
-          bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
-          bookingMessage.dataset.status = 'error'
-          return
-        }
-
-        bookingMessage.textContent = 'Your booking was created successfully.'
-        bookingMessage.dataset.status = 'success'
       } catch (error) {
         bookingMessage.textContent = 'Could not create the booking. Please try again.'
         bookingMessage.dataset.status = 'error'
         console.error('Could not create booking:', error)
+        return
       }
+
+      const bookingEvent = new CustomEvent('booking-created', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          saved: false,
+        },
+      })
+
+      this.dispatchEvent(bookingEvent)
+
+      if (!bookingEvent.detail.saved) {
+        this.#bookingCalendar.cancelBooking(bookingId)
+      }
+
+      try {
+        this.#renderAvailableTimes()
+      } catch (error) {
+        console.error('Could not refresh available booking times:', error)
+
+        bookingMessage.textContent = bookingEvent.detail.saved
+          ? 'Your booking was saved, but the available times could not be updated.'
+          : 'Your booking could not be saved. Please try again.'
+
+        bookingMessage.dataset.status = 'error'
+        return
+      }
+
+      if (!bookingEvent.detail.saved) {
+        bookingMessage.textContent = 'Your booking could not be saved. Please try again.'
+        bookingMessage.dataset.status = 'error'
+        return
+      }
+
+      bookingMessage.textContent = 'Your booking was created successfully.'
+      bookingMessage.dataset.status = 'success'
     }
 
     /**
