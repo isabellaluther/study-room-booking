@@ -52,7 +52,7 @@ customElements.define(
     }
 
     /**
-     * Handles cancellation requests from the booking list.
+     * Registers the booking cancellation event listener.
      *
      * @returns {void}
      */
@@ -70,34 +70,7 @@ customElements.define(
             return
           }
 
-          const bookingId = cancelButton.dataset.bookingId
-
-          try {
-            const booking = this.#bookingCalendar.getBookingById(bookingId)
-
-            cancelBooking(this.#bookingCalendar, bookingId)
-
-            const cancellationEvent = new CustomEvent('booking-cancelled', {
-              bubbles: true,
-              composed: true,
-              detail: {
-                saved: false,
-              },
-            })
-
-            this.dispatchEvent(cancellationEvent)
-
-            if (!cancellationEvent.detail.saved) {
-              this.#bookingCalendar.addBooking(booking)
-              this.#renderBookings()
-              window.alert('Your booking could not be cancelled. Please try again.')
-              return
-            }
-
-            this.#renderBookings()
-          } catch (error) {
-            console.error('Could not cancel booking:', error)
-          }
+          this.#handleBookingCancellation(cancelButton.dataset.bookingId)
         },
         { signal: this.#abortController.signal }
       )
@@ -135,6 +108,41 @@ customElements.define(
     }
 
     /**
+     * Handles cancellation of an existing booking.
+     *
+     * @param {string} bookingId - The identifier of the booking to cancel.
+     * @returns {void}
+     */
+    #handleBookingCancellation(bookingId) {
+      try {
+        const booking = this.#bookingCalendar.getBookingById(bookingId)
+
+        cancelBooking(this.#bookingCalendar, bookingId)
+
+        const cancellationEvent = new CustomEvent('booking-cancelled', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            saved: false,
+          },
+        })
+
+        this.dispatchEvent(cancellationEvent)
+
+        if (!cancellationEvent.detail.saved) {
+          this.#bookingCalendar.addBooking(booking)
+          this.#renderBookings()
+          window.alert('Your booking could not be cancelled. Please try again.')
+          return
+        }
+
+        this.#renderBookings()
+      } catch (error) {
+        console.error('Could not cancel booking:', error)
+      }
+    }
+
+    /**
      * Renders the existing study room bookings.
      *
      * @returns {void}
@@ -161,39 +169,58 @@ customElements.define(
         const bookings = this.#bookingCalendar.getBookingsForResource(studyRoom)
 
         for (const booking of bookings) {
-          const bookingCard = document.createElement('article')
-          bookingCard.className = 'booking-card'
-
-          const roomElement = document.createElement('h3')
-          const dateElement = document.createElement('p')
-          const timeElement = document.createElement('p')
-
-          const timeSlot = booking.getTimeSlot()
-          const startTime = timeSlot.getStartTime()
-          const endTime = timeSlot.getEndTime()
-
-          const date = startTime.toLocaleDateString('sv-SE')
-          const start = startTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
-          const end = endTime.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
-
-          roomElement.textContent = studyRoom.getName()
-          dateElement.textContent = date
-          timeElement.textContent = `${start}-${end}`
-
-          const cancelButton = document.createElement('button')
-
-          cancelButton.type = 'button'
-          cancelButton.textContent = 'Cancel booking'
-          cancelButton.dataset.bookingId = booking.getId()
-
-          bookingCard.appendChild(roomElement)
-          bookingCard.appendChild(dateElement)
-          bookingCard.appendChild(timeElement)
-          bookingCard.appendChild(cancelButton)
+          const bookingCard = this.#createBookingCard(booking, studyRoom)
 
           bookingsContainer.appendChild(bookingCard)
         }
       }
+    }
+
+    /**
+     * Creates an HTML card for a booking.
+     *
+     * @param {import('booking-module').Booking} booking - The booking to display.
+     * @param {import('booking-module').Resource} studyRoom - The booked study room.
+     * @returns {HTMLElement} The booking card.
+     */
+    #createBookingCard(booking, studyRoom) {
+      const bookingCard = document.createElement('article')
+      bookingCard.className = 'booking-card'
+
+      const roomElement = document.createElement('h3')
+      const dateElement = document.createElement('p')
+      const timeElement = document.createElement('p')
+
+      const timeSlot = booking.getTimeSlot()
+      const startTime = timeSlot.getStartTime()
+      const endTime = timeSlot.getEndTime()
+
+      const date = startTime.toLocaleDateString('sv-SE')
+      const start = startTime.toLocaleTimeString('sv-SE', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      const end = endTime.toLocaleTimeString('sv-SE', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+
+      roomElement.textContent = studyRoom.getName()
+      dateElement.textContent = date
+      timeElement.textContent = `${start}-${end}`
+
+      const cancelButton = document.createElement('button')
+
+      cancelButton.type = 'button'
+      cancelButton.textContent = 'Cancel booking'
+      cancelButton.dataset.bookingId = booking.getId()
+
+      bookingCard.appendChild(roomElement)
+      bookingCard.appendChild(dateElement)
+      bookingCard.appendChild(timeElement)
+      bookingCard.appendChild(cancelButton)
+
+      return bookingCard
     }
   }
 )
