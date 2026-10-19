@@ -9,7 +9,10 @@ export function createHtmlTemplate() {
   template.innerHTML = `
     <section>
       <h2>Study Rooms</h2>
-      <div id="study-rooms"></div>
+      <fieldset>
+        <legend>Select a study room</legend>
+        <div id="study-rooms"></div>
+      </fieldset>
     </section>
 
     <section>
@@ -40,9 +43,13 @@ export function createHtmlTemplate() {
       </fieldset>
     </section>
 
-    <section id="available-times-section" hidden> 
+    <section id="available-times-section" hidden>
       <h2>Available Times</h2>
-      <div id="available-times"></div>
+
+      <fieldset>
+        <legend>Select an available time</legend>
+        <div id="available-times"></div>
+      </fieldset>
 
       <button type="button" id="book-button" disabled>
         Book selected time

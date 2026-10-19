@@ -20,6 +20,19 @@ export function createCssTemplate() {
         margin-bottom: 2rem;
       }
 
+      fieldset {
+        margin: 0;
+        padding: 0;
+        border: none;
+        min-width: 0;
+      }
+
+      legend {
+        margin-bottom: 12px;
+        color: #64748b;
+        font-size: 14px;
+      }
+
       #study-rooms {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -90,16 +103,6 @@ export function createCssTemplate() {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
-        margin: 0;
-        padding: 0;
-        border: none;
-        min-width: 0;
-      }
-
-      #booking-duration legend {
-        margin-bottom: 12px;
-        color: #64748b;
-        font-size: 14px;
       }
 
       #booking-duration label {
