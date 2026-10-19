@@ -2,7 +2,7 @@
  * Tests for the bookingStorage module.
  *
  * @file test/bookingStorage.test.js
- * @author Isabella Luther <il233at@student.lnu.se>
+ * @author Isabella Luther <il223at@student.lnu.se>
  * @version 1.0.0
  */
 
@@ -86,6 +86,22 @@ describe('saveBookings', () => {
       vi.unstubAllGlobals()
     }
   })
+
+  it('throws an error when localStorage cannot save bookings', () => {
+    const setItem = vi.fn().mockImplementation(() => {
+      throw new Error('Storage unavailable')
+    })
+
+    vi.stubGlobal('localStorage', { setItem })
+
+    try {
+      expect(() => {
+        saveBookings([])
+      }).toThrow('Storage unavailable')
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
 })
 
 describe('loadBookings', () => {
@@ -142,6 +158,20 @@ describe('loadBookings', () => {
       expect(() => {
         loadBookings()
       }).toThrow(SyntaxError)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('throws an error when stored booking data is not an array', () => {
+    const getItem = vi.fn().mockReturnValue(JSON.stringify({}))
+
+    vi.stubGlobal('localStorage', { getItem })
+
+    try {
+      expect(() => {
+        loadBookings()
+      }).toThrow(TypeError)
     } finally {
       vi.unstubAllGlobals()
     }
