@@ -230,6 +230,7 @@ customElements.define(
 
       cancelButton.type = 'button'
       cancelButton.textContent = 'Cancel booking'
+      cancelButton.setAttribute('aria-label', `Cancel booking for ${studyRoom.getName()} on ${date} at ${start}`)
       cancelButton.dataset.bookingId = booking.getId()
 
       bookingCard.appendChild(roomElement)
